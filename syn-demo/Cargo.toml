@@ -1,0 +1,8 @@
+[package]
+name = "syn-demo"
+version = "0.1.0"
+authors = ["anykao <600913@gmail.com>"]
+
+[dependencies]
+syn = "*"
+quote = "*"
