@@ -1,8 +1,10 @@
 [package]
-name = "syn-demo"
+name = "oauth2"
 version = "0.1.0"
 authors = ["anykao <600913@gmail.com>"]
 
 [dependencies]
-num-fields = { path = "num-fields" }
+reqwest = "0.3"
+rocket = "0.1.5"
+rocket_codegen = "0.1.5"
 
