@@ -1,0 +1,6 @@
+[package]
+name = "openweathermap"
+version = "0.1.0"
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+
+[dependencies]

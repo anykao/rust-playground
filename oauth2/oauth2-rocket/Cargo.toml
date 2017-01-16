@@ -1,0 +1,12 @@
+[package]
+name = "oauth2-rocket"
+version = "0.1.0"
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+
+[dependencies]
+rocket = "0.1.5"
+rocket_codegen = "0.1.5"
+oauth2 = { path = ".." }
+
+[dependencies.lazy_static]
+git = "https://github.com/rust-lang-nursery/lazy-static.rs"

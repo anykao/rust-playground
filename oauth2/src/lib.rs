@@ -2,7 +2,6 @@
 // extern crate log;
 extern crate reqwest;
 
-// pub mod provider;
 
 use reqwest::Url;
 use std::collections::HashMap;
@@ -19,11 +18,6 @@ pub struct Config {
     pub scopes: Vec<String>,
     pub redirect_url: String,
 }
-
-// pub struct Endpoint {
-// pub auth_url: Url,
-// pub token_url: Url,
-//
 
 
 #[derive(Debug, Clone, PartialEq, Eq, Ord, PartialOrd)]
