@@ -1,0 +1,20 @@
+[package]
+name = "logDNA"
+version = "0.1.0"
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+
+[dependencies]
+serde = "*"
+serde_derive = "*"
+serde_json = "*"
+reqwest = "*"
+dotenv = "*"
+dotenv_macros = "*"
+error-chain = "*"
+pretty_env_logger = "*"
+log = "*"
+#clippy = {version = "*", optional = true}
+
+#[features]
+#default = []
+
