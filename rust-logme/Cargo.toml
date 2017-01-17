@@ -5,7 +5,6 @@ authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
 
 [dependencies]
 lazy_static = "0.1"
-memmap = "0.5"
 chrono = "0.2"
 error-chain = "*"
 pretty_env_logger = "*"
