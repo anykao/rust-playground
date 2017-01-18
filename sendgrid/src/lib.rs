@@ -10,8 +10,8 @@ pub type SGMap = HashMap<String, String>;
 
 #[derive(Serialize, Deserialize, Default, Debug)]
 pub struct SGMailV3 {
-    Sender: Option<Email>,
-    Subject: Option<String>,
+    Sender: Email,
+    Subject: String,
     Personalizations: Vec<Personalization>,
     Content: Vec<Content>,
     Sections: Option<SGMap>,
@@ -21,7 +21,7 @@ pub struct SGMailV3 {
     SendAt: Option<u64>,
     BatchID: Option<String>,
     IPPoolID: Option<String>,
-    ReplyTo: Option<Email>,
+    ReplyTo: Email,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -37,13 +37,13 @@ pub struct Personalization {
     SendAt: i64,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Default, Debug)]
 pub struct Email {
     Name: String,
     Address: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Default, Debug)]
 pub struct Content {
     Type: String,
     Value: String,
@@ -58,12 +58,12 @@ impl EmailBuilder {
     }
 
     pub fn add_from(&mut self, email: Email) -> &mut Self {
-        self.0.Sender = Some(email);
+        self.0.Sender = email;
         self
     }
 
     pub fn add_subject(&mut self, subject: String) -> &mut Self {
-        self.0.Subject = Some(subject);
+        self.0.Subject = subject;
         self
     }
 
