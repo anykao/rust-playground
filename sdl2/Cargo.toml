@@ -1,0 +1,9 @@
+[package]
+name = "sdl2"
+version = "0.1.0"
+authors = ["anykao <600913@gmail.com>"]
+
+[dependencies]
+
+[dependencies.sdl2]
+git = "https://github.com/AngryLawyer/rust-sdl2"
