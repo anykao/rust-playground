@@ -50,6 +50,6 @@ fn run() -> Result<()> {
         .header(Authorization(Bearer { token: api_key.to_owned() }))
         .send()
         .chain_err(|| "unable to send body")?;
-    ::std::io::copy(&mut res, &mut ::std::io::stdout()).unwrap();
+    ::std::io::copy(&mut res, &mut ::std::io::stdout()).chain_err(|| "unable to copy to stdout.")?;
     Ok(())
 }
