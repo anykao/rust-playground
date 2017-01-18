@@ -58,7 +58,12 @@ fn run() -> Result<()> {
     map.insert("Subject", "json");
     map.insert("content", "json");
 
-    let mut builder = EmailBuilder::new().add_subject("".to_owned()).finish();
+    // let mut builder = EmailBuilder::new().add_subject("".to_owned()).finish();
+    let mut builder = EmailBuilder::new();
+    let mail = builder.add_from(Some("hesdf".to_owned()), "sdf".to_owned())
+        .add_subject("".to_owned())
+        .finish();
+    println!("{:?}", mail);
     let client = reqwest::Client::new().unwrap();
     let res = client.post("https://api.sendgrid.com/v3/mail/send")
         .header(Authorization(Bearer { token: api_key.to_owned() }))
