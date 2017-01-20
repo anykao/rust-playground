@@ -11,13 +11,16 @@ extern crate pretty_env_logger;
 extern crate nix;
 extern crate signal;
 
+
 use chrono::*;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 use std::env;
+use std::io::BufReader;
+use std::io::BufRead;
 use std::io::Write;
 use std::fs::OpenOptions;
-use nix::sys::signal::SIGINT;
+use nix::sys::signal::SIGTERM;
 use signal::trap::Trap;
 
 lazy_static! {
@@ -57,6 +60,10 @@ fn write_log(fname: &str, is_end: bool) -> Result<()> {
         .create(true)
         .open(fname)
         .chain_err(|| "unable to open file")?;
+    //{let file = BufReader::new(&f);
+    //{let count = file.lines().count();
+    //{debug!("count:{:?}", count);
+    //
     let mut contents: String = String::new();
     contents.push_str("Start work at ".as_ref());
     contents.push_str(&**START);
@@ -64,9 +71,11 @@ fn write_log(fname: &str, is_end: bool) -> Result<()> {
     if is_end {
         contents.push_str("End work at ".as_ref());
         contents.push_str(work.as_ref());
+        contents.push_str("\n");
     } else {
         contents.push_str("Still work at ".as_ref());
         contents.push_str(work.as_ref());
+        contents.push_str("\n");
     }
     debug!("{}", &contents);
     f.write_all(&contents.into_bytes()).chain_err(|| "unable to write to file")?;
@@ -81,9 +90,9 @@ fn run() -> Result<()> {
     p.push(format!("{}.log", dt.format("%Y%m%d")));
     let ten_secs = Duration::from_secs(60);
     let filename = p.to_str().unwrap();
-    let trap = Trap::trap(&[SIGINT]);
+    let trap = Trap::trap(&[SIGTERM]);
     loop {
-        if let Some(SIGINT) = trap.wait(Instant::now()) {
+        if let Some(SIGTERM) = trap.wait(Instant::now()) {
             write_log(filename, true).chain_err(|| "Error in writing log file")?;
             break;
         }
