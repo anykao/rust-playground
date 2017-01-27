@@ -8,20 +8,22 @@ extern crate log;
 extern crate lazy_static;
 extern crate chrono;
 extern crate pretty_env_logger;
-extern crate nix;
-extern crate signal;
-
+extern crate futures;
+extern crate tokio_core;
+extern crate tokio_signal;
 
 use chrono::*;
-use std::thread::sleep;
+use std::thread::{self, sleep};
 use std::time::{Duration, Instant};
 use std::env;
 use std::io::BufReader;
 use std::io::BufRead;
 use std::io::Write;
 use std::fs::OpenOptions;
-use nix::sys::signal::SIGTERM;
-use signal::trap::Trap;
+use futures::stream::Stream;
+use tokio_core::reactor::Core;
+use tokio_signal::unix::{Signal, SIGTERM, SIGINT};
+// use std::borrow::ToOwned;
 
 lazy_static! {
     #[derive(Copy, Clone, Debug)]
@@ -34,31 +36,13 @@ mod errors {
 
 use errors::*;
 
-fn main() {
-    if let Err(ref e) = run() {
-        use ::std::io::Write;
-        let stderr = &mut ::std::io::stderr();
-        let errmsg = "Error writing to stderr";
+quick_main!(run);
 
-        writeln!(stderr, "error: {}", e).expect(errmsg);
-
-        for e in e.iter().skip(1) {
-            writeln!(stderr, "caused by: {}", e).expect(errmsg);
-        }
-
-        if let Some(backtrace) = e.backtrace() {
-            writeln!(stderr, "backtrace: {:?}", backtrace).expect(errmsg);
-        }
-
-        ::std::process::exit(1);
-    }
-}
-
-fn write_log(fname: &str, is_end: bool) -> Result<()> {
+fn write_log<T: Into<String>>(fname: T, is_end: bool) -> Result<()> {
     let work = Local::now().to_string();
     let mut f = OpenOptions::new().write(true)
         .create(true)
-        .open(fname)
+        .open(fname.into())
         .chain_err(|| "unable to open file")?;
     //{let file = BufReader::new(&f);
     //{let count = file.lines().count();
@@ -89,13 +73,23 @@ fn run() -> Result<()> {
     let mut p = env::current_dir().unwrap();
     p.push(format!("{}.log", dt.format("%Y%m%d")));
     let ten_secs = Duration::from_secs(60);
-    let filename = p.to_str().unwrap();
-    let trap = Trap::trap(&[SIGTERM]);
+    let filename = p.to_str().unwrap().to_owned();
+
+    thread::spawn(move || {
+        let mut core = Core::new().unwrap();
+        let handle = core.handle();
+        let cygnal = Signal::new(SIGINT, &handle);
+        let stream = core.run(cygnal).unwrap();
+        core.run(stream.for_each(|sig| {
+                write_log(filename, true).unwrap();
+                println!("not working");
+                Ok(())
+            }))
+            .unwrap();
+        ()
+    });
+
     loop {
-        if let Some(SIGTERM) = trap.wait(Instant::now()) {
-            write_log(filename, true).chain_err(|| "Error in writing log file")?;
-            break;
-        }
         write_log(filename, false).chain_err(|| "Error in writing log file")?;
         sleep(ten_secs);
     }

@@ -1,13 +1,14 @@
 [package]
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
 name = "rust-logme"
 version = "0.1.0"
-authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
 
 [dependencies]
-lazy_static = "0.1"
 chrono = "0.2"
-error-chain = "*"
+lazy_static = "0.1"
 pretty_env_logger = "*"
-log = "*"
-nix = "0.6"
-signal = "0.3"
+error-chain = "0.8.1"
+futures = "0.1.9"
+log = "0.3.6"
+tokio-core = "0.1.4"
+tokio-signal = "0.1.2"
