@@ -1,0 +1,10 @@
+[package]
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+name = "echo-proto"
+version = "0.1.0"
+
+[dependencies]
+futures = "0.1.9"
+tokio-core = "0.1.4"
+tokio-proto = "0.1.0"
+tokio-service = "0.1.0"
