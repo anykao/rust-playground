@@ -11,11 +11,12 @@ extern crate pretty_env_logger;
 extern crate futures;
 extern crate tokio_core;
 extern crate tokio_signal;
+extern crate app_dirs;
 
 use chrono::*;
+use app_dirs::*;
 use std::thread::{self, sleep};
 use std::time::Duration;
-use std::env;
 use std::io::BufReader;
 use std::io::BufRead;
 use std::io::Write;
@@ -36,22 +37,40 @@ mod errors {
 
 use errors::*;
 
+const APP_INFO: AppInfo = AppInfo {
+    name: "logme",
+    author: "meng",
+};
+
 quick_main!(run);
 
 fn write_log<T: Into<String>>(fname: T, is_end: bool) -> Result<()> {
+
     let work = Local::now().to_string();
-    let mut f = OpenOptions::new().write(true)
+    let mut f = OpenOptions::new().read(true)
+        .write(true)
         .create(true)
         .open(fname.into())
         .chain_err(|| "unable to open file")?;
-    //{let file = BufReader::new(&f);
-    //{let count = file.lines().count();
-    //{debug!("count:{:?}", count);
-    //
+    let mut start_line: String = String::new();
+    {
+        let file = BufReader::new(&f);
+        match file.lines().next() {
+            Some(Ok(start)) => {
+                start_line.push_str(&start);
+                start_line.push_str("\n");
+            }
+            _ => {
+                debug!("{}", "can't get existing contents");
+                start_line.push_str("Start work at ".as_ref());
+                start_line.push_str(&**START);
+                start_line.push_str("\n");
+            }
+        }
+    }
+
     let mut contents: String = String::new();
-    contents.push_str("Start work at ".as_ref());
-    contents.push_str(&**START);
-    contents.push_str("\n");
+    contents.push_str(&start_line);
     if is_end {
         contents.push_str("End work at ".as_ref());
         contents.push_str(work.as_ref());
@@ -70,7 +89,7 @@ fn write_log<T: Into<String>>(fname: T, is_end: bool) -> Result<()> {
 fn run() -> Result<()> {
     pretty_env_logger::init().unwrap();
     let dt = Local::now();
-    let mut p = env::current_dir().unwrap();
+    let mut p = app_root(AppDataType::UserConfig, &APP_INFO).unwrap();
     p.push(format!("{}.log", dt.format("%Y%m%d")));
     let filename = Arc::new(p);
     let rc1 = filename.clone();

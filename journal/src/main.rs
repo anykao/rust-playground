@@ -33,7 +33,7 @@ fn main() {
     let mut end_at = Local::now();
 
     let mut p = PathBuf::new();
-    p.push("/home/innolab/dotfiles");
+    p.push("/home/innolab/.config/logme");
     p.push(format!("{}.log", dt.format("%Y%m%d")));
 
     let f = OpenOptions::new()
