@@ -12,7 +12,7 @@ fn is_hello<T: AsRef<str>>(s: T) {
 fn main() {
     let mut i = 5;
 
-    foo(&i);
+    foo(i);
     foo(&mut i);
 
     let s = "hello";

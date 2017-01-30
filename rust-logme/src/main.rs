@@ -14,7 +14,7 @@ extern crate tokio_signal;
 
 use chrono::*;
 use std::thread::{self, sleep};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use std::env;
 use std::io::BufReader;
 use std::io::BufRead;
@@ -22,8 +22,8 @@ use std::io::Write;
 use std::fs::OpenOptions;
 use futures::stream::Stream;
 use tokio_core::reactor::Core;
-use tokio_signal::unix::{Signal, SIGTERM, SIGINT};
-// use std::borrow::ToOwned;
+use tokio_signal::unix::{Signal, SIGTERM};
+use std::sync::Arc;
 
 lazy_static! {
     #[derive(Copy, Clone, Debug)]
@@ -72,26 +72,25 @@ fn run() -> Result<()> {
     let dt = Local::now();
     let mut p = env::current_dir().unwrap();
     p.push(format!("{}.log", dt.format("%Y%m%d")));
-    let ten_secs = Duration::from_secs(60);
-    let filename = p.to_str().unwrap().to_owned();
+    let filename = Arc::new(p);
+    let rc1 = filename.clone();
 
     thread::spawn(move || {
         let mut core = Core::new().unwrap();
         let handle = core.handle();
-        let cygnal = Signal::new(SIGINT, &handle);
+        let cygnal = Signal::new(SIGTERM, &handle);
         let stream = core.run(cygnal).unwrap();
-        core.run(stream.for_each(|sig| {
-                write_log(filename, true).unwrap();
-                println!("not working");
+        core.run(stream.for_each(|_| {
+                write_log(rc1.to_str().unwrap(), true).unwrap();
                 Ok(())
             }))
             .unwrap();
         ()
     });
 
+    let ten_secs = Duration::from_secs(60);
     loop {
-        write_log(filename, false).chain_err(|| "Error in writing log file")?;
+        write_log(filename.to_str().unwrap(), false).chain_err(|| "Error in writing log file")?;
         sleep(ten_secs);
     }
-    Ok(())
 }

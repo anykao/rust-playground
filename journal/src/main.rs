@@ -5,6 +5,9 @@ extern crate lazy_static;
 #[macro_use]
 extern crate log;
 extern crate pretty_env_logger;
+#[macro_use]
+extern crate clap;
+
 
 use std::path::PathBuf;
 use std::fs::OpenOptions;
@@ -12,6 +15,7 @@ use std::io::BufReader;
 use std::io::BufRead;
 use chrono::*;
 use regex::Regex;
+use clap::{Arg, App};
 
 lazy_static! {
     static ref RE: Regex = Regex::new(r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})").unwrap();
@@ -19,6 +23,11 @@ lazy_static! {
 
 fn main() {
     pretty_env_logger::init().ok();
+    let matches = App::new("journal")
+        .version(crate_version!())
+        .author(crate_authors!())
+        .arg(Arg::with_name(""))
+        .get_matches();
     let dt = Local::now();
     let mut start_at = Local::now();
     let mut end_at = Local::now();
@@ -83,7 +92,7 @@ fn main() {
     println!("{}", " 10:00~12:00");
     println!("{}", "  午前作業");
     println!("{}", " 12:00~13:00");
-    println!("{}", "  昼");
+    println!("{}", "  お昼");
     println!("{}", " 13:00~19:00");
     println!("{}", "  午後作業");
     println!("");
