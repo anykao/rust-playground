@@ -44,33 +44,46 @@ const APP_INFO: AppInfo = AppInfo {
 
 quick_main!(run);
 
-fn write_log<T: Into<String>>(fname: T, is_end: bool) -> Result<()> {
-
-    let work = Local::now().to_string();
-    let mut f = OpenOptions::new().read(true)
-        .write(true)
-        .create(true)
-        .open(fname.into())
-        .chain_err(|| "unable to open file")?;
-    let mut start_line: String = String::new();
-    {
-        let file = BufReader::new(&f);
-        match file.lines().next() {
-            Some(Ok(start)) => {
-                start_line.push_str(&start);
-                start_line.push_str("\n");
-            }
-            _ => {
-                debug!("{}", "can't get existing contents");
-                start_line.push_str("Start work at ".as_ref());
-                start_line.push_str(&**START);
-                start_line.push_str("\n");
+fn read_log<T: AsRef<str>>(fname: T) -> Option<String> {
+    match OpenOptions::new().read(true).open(fname.as_ref()) {
+        Ok(f) => {
+            let file = BufReader::new(&f);
+            match file.lines().next() {
+                Some(Ok(start)) => Some(start),
+                Some(Err(_)) => None,
+                None => None,
             }
         }
+        Err(_) => None,
     }
+}
+
+fn write_log<T: Into<String>>(fname: T, is_end: bool) -> Result<()> {
+
+    let name = fname.into();
+
+    let start_line = read_log(&name);
+
+    let work = Local::now().to_string();
+    let mut f = OpenOptions::new().write(true)
+        .truncate(true)
+        .create(true)
+        .open(name)
+        .chain_err(|| "unable to open file")?;
 
     let mut contents: String = String::new();
-    contents.push_str(&start_line);
+    match start_line {
+        Some(start) => {
+            contents.push_str(&start);
+            contents.push_str("\n");
+        }
+        _ => {
+            debug!("{}", "can't get existing contents");
+            contents.push_str("Start work at ".as_ref());
+            contents.push_str(&**START);
+            contents.push_str("\n");
+        }
+    };
     if is_end {
         contents.push_str("End work at ".as_ref());
         contents.push_str(work.as_ref());
