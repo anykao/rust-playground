@@ -1,0 +1,8 @@
+[package]
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+name = "quickchecker"
+version = "0.1.0"
+
+[dependencies]
+quickcheck = "0.4.1"
+quickcheck_macros = "0.4.1"
