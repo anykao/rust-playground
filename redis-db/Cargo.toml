@@ -1,0 +1,8 @@
+[package]
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+name = "redis-db"
+version = "0.1.0"
+
+[dependencies]
+dotenv = "0.8.0"
+redis = "0.8.0"
