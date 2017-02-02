@@ -1,0 +1,8 @@
+[package]
+authors = ["meng.fanjun <xmeng.fanjun@contract.isid.co.jp>"]
+name = "innolab_bot"
+version = "0.1.0"
+
+[dependencies]
+dotenv = "0.8.0"
+tg_botapi = "0.1.2"

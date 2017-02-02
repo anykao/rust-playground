@@ -1,0 +1,6 @@
+[submodule "rust-tg-botapi"]
+	path = rust-tg-botapi
+	url = https://github.com/JuanPotato/rust-tg-botapi
+[submodule "innolab_bot/rust-tg-botapi"]
+	path = innolab_bot/rust-tg-botapi
+	url = https://github.com/JuanPotato/rust-tg-botapi
