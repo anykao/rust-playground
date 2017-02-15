@@ -7,8 +7,10 @@ extern crate log;
 extern crate pretty_env_logger;
 #[macro_use]
 extern crate clap;
+extern crate ansi_term;
 
-
+// use ansi_term::Style;
+use ansi_term::Colour::{Blue, Yellow, Green, Red};
 use std::path::PathBuf;
 use std::fs::OpenOptions;
 use std::io::BufReader;
@@ -26,8 +28,36 @@ fn main() {
     let matches = App::new("journal")
         .version(crate_version!())
         .author(crate_authors!())
-        .arg(Arg::with_name(""))
+        .arg(Arg::with_name("start")
+            .short("s")
+            .long("start")
+            .help("予定を吐き出す"))
         .get_matches();
+    if matches.is_present("start") {
+        print_yotei()
+    } else {
+        print_jiseki()
+    }
+}
+
+fn print_yotei() {
+    let dt = Local::now();
+    let display = match dt.weekday() {
+        Weekday::Mon => "月",
+        Weekday::Tue => "火",
+        Weekday::Wed => "水",
+        Weekday::Thu => "木",
+        Weekday::Fri => "金",
+        Weekday::Sat => "土",
+        Weekday::Sun => "日",
+    };
+    println!("{}",
+             format!("{}({})-{}", dt.format("%m/%d"), display, "予定"));
+
+    println!("{}", Red.paint("  予定作業"));
+}
+
+fn print_jiseki() {
     let dt = Local::now();
     let mut start_at = Local::now();
     let mut end_at = Local::now();
@@ -90,11 +120,11 @@ fn main() {
              format!("{}({})-{}", dt.format("%m/%d"), display, "実績"));
     println!("");
     println!("{}", " 10:00~12:00");
-    println!("{}", "  午前作業");
+    println!("{}", Yellow.paint("  午前作業"));
     println!("{}", " 12:00~13:00");
-    println!("{}", "  お昼");
+    println!("{}", Blue.paint("  お昼"));
     println!("{}", " 13:00~19:00");
-    println!("{}", "  午後作業");
+    println!("{}", Green.paint("  午後作業"));
     println!("");
     println!("工数:{}h", hour);
     println!("");
