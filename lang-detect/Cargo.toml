@@ -1,0 +1,7 @@
+[package]
+authors = ["anykao <600913@gmail.com>"]
+name = "lang-detect"
+version = "0.1.0"
+
+[dependencies]
+whatlang = "0.3.1"

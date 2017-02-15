@@ -1,0 +1,14 @@
+[package]
+authors = ["anykao <600913@gmail.com>"]
+name = "cygnal"
+version = "0.1.0"
+
+[dependencies]
+error-chain = "0.8.1"
+futures = "0.1.9"
+lazy_static = "*"
+libc = "0.2.16"
+log = "0.3.6"
+nix = "0.7.0"
+tokio-core = "0.1.4"
+tokio-signal = "0.1.2"

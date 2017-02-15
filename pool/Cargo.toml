@@ -1,0 +1,7 @@
+[package]
+authors = ["anykao <600913@gmail.com>"]
+name = "pool"
+version = "0.1.0"
+
+[dependencies]
+scoped-pool = "1.0.0"
