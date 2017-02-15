@@ -1,0 +1,8 @@
+[package]
+authors = ["anykao <600913@gmail.com>"]
+name = "cli-starter"
+version = "0.1.0"
+
+[dependencies]
+structopt = "0.0.3"
+structopt-derive = "0.0.3"
