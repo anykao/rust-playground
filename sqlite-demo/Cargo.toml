@@ -1,0 +1,11 @@
+[package]
+authors = ["anykao <600913@gmail.com>"]
+name = "sqlite-demo"
+version = "0.1.0"
+
+[dependencies]
+time = "0.1.36"
+
+[dependencies.rusqlite]
+features = ["bundled"]
+version = "0.9.5"
